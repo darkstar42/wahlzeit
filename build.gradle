@@ -14,17 +14,6 @@ buildscript {
     }
 }
 
-// check if JAVA_HOME is set, otherwise build tasks will fail
-gradle.taskGraph.whenReady {
-    graph ->
-    if (System.env.'JAVA_HOME' == null) {
-        throw new GradleException("JAVA_HOME not set. Please set it, otherwise this task can not be executed.")
-    }
-    else {
-        println "JAVA_HOME = " + System.env.'JAVA_HOME'
-    }
-}
-
 repositories {
     mavenCentral()
 }
