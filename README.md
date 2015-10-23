@@ -1,5 +1,6 @@
 # Wahlzeit: Open Source Software for Photo Rating Sites
 
+[![Build Status](https://travis-ci.org/darkstar42/wahlzeit.svg)](https://travis-ci.org/darkstar42/wahlzeit)
 
 
 ## PART I: INTRODUCTION
