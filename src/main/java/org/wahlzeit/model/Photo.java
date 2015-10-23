@@ -104,6 +104,11 @@ public class Photo extends DataObject {
 	 *
 	 */
 	protected PhotoStatus status = PhotoStatus.VISIBLE;
+
+	/**
+	 *
+	 */
+	protected Coordinate location = new Coordinate();
 	
 	/**
 	 *
@@ -204,6 +209,20 @@ public class Photo extends DataObject {
 	public String getCaption(ModelConfig cfg) {
 		String ownerName = UserManager.getInstance().getUserById(ownerId).getNickName();
 		return cfg.asPhotoCaption(ownerName);
+	}
+
+	/**
+	 * @methodtype get
+	 */
+	public Coordinate getLocation() {
+		return location;
+	}
+
+	/**
+	 * @methodtype set
+	 */
+	public void setLocation(Coordinate location) {
+		this.location = location;
 	}
 
 	/**
