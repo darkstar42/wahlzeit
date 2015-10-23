@@ -3,6 +3,7 @@
 /classes
 /src/main/webapp/WEB-INF/lib/
 /.settings/
+/WEB-INF/
 *.iml
 .gradle
 .idea
