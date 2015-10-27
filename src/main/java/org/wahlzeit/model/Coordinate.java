@@ -18,18 +18,30 @@ public class Coordinate extends DataObject {
         setLongitude(longitude);
     }
 
+    /**
+     * @methodtype get
+     */
     public double getLatitude() {
         return latitude;
     }
 
+    /**
+     * @methodtype set
+     */
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
+    /**
+     * @methodtype get
+     */
     public double getLongitude() {
         return longitude;
     }
 
+    /**
+     * @methodtype set
+     */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
