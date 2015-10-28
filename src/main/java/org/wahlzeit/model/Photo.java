@@ -108,7 +108,7 @@ public class Photo extends DataObject {
 	/**
 	 *
 	 */
-	protected Coordinate location = new Coordinate();
+	protected Location location = null;
 	
 	/**
 	 *
@@ -214,14 +214,14 @@ public class Photo extends DataObject {
 	/**
 	 * @methodtype get
 	 */
-	public Coordinate getLocation() {
+	public Location getLocation() {
 		return location;
 	}
 
 	/**
 	 * @methodtype set
 	 */
-	public void setLocation(Coordinate location) {
+	public void setLocation(Location location) {
 		this.location = location;
 	}
 
