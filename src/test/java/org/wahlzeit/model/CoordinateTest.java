@@ -11,6 +11,8 @@ import static org.junit.Assert.assertTrue;
  * Test cases for the Coordinate class
  */
 public class CoordinateTest {
+    private final static double DELTA = 0.01;
+
     private Coordinate coordinateA;
     private Coordinate coordinateB;
     private Coordinate coordinateC;
@@ -55,10 +57,10 @@ public class CoordinateTest {
 
     @Test
     public void testGetDistance() {
-        assertEquals(new Coordinate(128.0, 64.0), coordinateA.getDistance(coordinateB));
-        assertEquals(new Coordinate(128.0, 64.0), coordinateB.getDistance(coordinateA));
-        assertEquals(new Coordinate(0.0, 0.0), coordinateB.getDistance(coordinateB));
-        assertEquals(new Coordinate(192.0, 192.0), coordinateC.getDistance(coordinateD));
+        assertEquals(143.1, coordinateA.getDistance(coordinateB), DELTA);
+        assertEquals(143.1, coordinateB.getDistance(coordinateA), DELTA);
+        assertEquals(0.0, coordinateB.getDistance(coordinateB), DELTA);
+        assertEquals(271.53, coordinateC.getDistance(coordinateD), DELTA);
     }
 
     @Test(expected = IllegalArgumentException.class)

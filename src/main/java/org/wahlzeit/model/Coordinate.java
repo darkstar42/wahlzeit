@@ -34,13 +34,13 @@ public class Coordinate extends DataObject {
         this.longitude = longitude;
     }
 
-    public Coordinate getDistance(Coordinate other) {
+    public double getDistance(Coordinate other) {
         if (other == null) throw new IllegalArgumentException("Coordinate can not be null");
 
-        double latitude = Math.abs(getLatitude() - other.getLatitude());
-        double longitude = Math.abs(getLongitude() - other.getLongitude());
+        double latDistance = getLatitudinalDistance(other);
+        double lonDistance = getLongitudinalDistance(other);
 
-        return new Coordinate(latitude, longitude);
+        return Math.sqrt(Math.pow(latDistance, 2) + Math.pow(lonDistance, 2));
     }
 
     public double getLatitudinalDistance(Coordinate other) {
