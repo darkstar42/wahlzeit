@@ -3,15 +3,7 @@ package org.wahlzeit.services;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
-import org.wahlzeit.model.Administrator;
-import org.wahlzeit.model.Client;
-import org.wahlzeit.model.Globals;
-import org.wahlzeit.model.Guest;
-import org.wahlzeit.model.Moderator;
-import org.wahlzeit.model.Photo;
-import org.wahlzeit.model.PhotoCase;
-import org.wahlzeit.model.Tag;
-import org.wahlzeit.model.User;
+import org.wahlzeit.model.*;
 import org.wahlzeit.model.persistence.DatastoreAdapter.ImageWrapper;
 
 /**
@@ -25,6 +17,7 @@ public class OfyService {
 	 * Register all entities at startup
 	 */
 	static {
+		factory().register(VegetablePhoto.class);
 		factory().register(Photo.class);
 		factory().register(Globals.class);
 		factory().register(Tag.class);
