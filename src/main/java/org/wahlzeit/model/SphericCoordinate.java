@@ -35,6 +35,23 @@ public class SphericCoordinate extends DataObject implements Coordinate {
             return;
         }
 
+        if (other instanceof CartesianCoordinate) {
+            CartesianCoordinate cartesianCoordinate = (CartesianCoordinate) other;
+
+            double x = cartesianCoordinate.getX();
+            double y = cartesianCoordinate.getY();
+            double z = cartesianCoordinate.getZ();
+
+            double radius = Math.sqrt(x * x + y * y + z * z);
+            double lat = Math.atan(y / x);
+            double lon = Math.atan(Math.sqrt(x * x + y * y) / z);
+
+            setLatitude(Math.toDegrees(lat));
+            setLongitude(Math.toDegrees(lon));
+            setRadius(radius);
+            return;
+        }
+
         throw new UnsupportedOperationException("Constructor not implemented for " + other.getClass().getName());
     }
 
@@ -188,13 +205,13 @@ public class SphericCoordinate extends DataObject implements Coordinate {
     public boolean isEqual(Coordinate coordinate) {
         SphericCoordinate other = new SphericCoordinate(coordinate);
 
-        if (this.getLatitude() != other.getLatitude()) {
+        if (Math.abs(getLatitude() - other.getLatitude()) > 0.1) {
             return false;
         }
-        if (this.getLongitude() != other.getLongitude()) {
+        if (Math.abs(getLongitude() - other.getLongitude()) > 0.1) {
             return false;
         }
-        if (this.getRadius() != other.getRadius()) {
+        if (Math.abs(getRadius() - other.getRadius()) > 0.1) {
             return false;
         }
 
