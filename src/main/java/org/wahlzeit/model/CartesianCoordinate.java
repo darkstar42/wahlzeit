@@ -1,8 +1,6 @@
 package org.wahlzeit.model;
 
-import org.wahlzeit.services.DataObject;
-
-public class CartesianCoordinate extends DataObject implements Coordinate {
+public class CartesianCoordinate extends AbstractCoordinate {
     private double x;
     private double y;
     private double z;
@@ -103,6 +101,7 @@ public class CartesianCoordinate extends DataObject implements Coordinate {
         this.z = z;
     }
 
+    @Override
     public double getDistance(Coordinate coordinate) {
         validateCoordinate(coordinate);
 
@@ -113,27 +112,6 @@ public class CartesianCoordinate extends DataObject implements Coordinate {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof Coordinate)) {
-            return false;
-        }
-
-        Coordinate other = (Coordinate) obj;
-        return isEqual(other);
-    }
-
-    /**
-     * Tests the equality with the given coordinate
-     *
-     * @param coordinate The coordinate object to test for equality
-     * @return True if the given coordinate is equal, false otherwise
-     */
     public boolean isEqual(Coordinate coordinate) {
         CartesianCoordinate other = new CartesianCoordinate(coordinate);
 
@@ -148,11 +126,5 @@ public class CartesianCoordinate extends DataObject implements Coordinate {
         }
 
         return true;
-    }
-
-    protected void validateCoordinate(Coordinate coordinate) {
-        if (coordinate == null) {
-            throw new IllegalArgumentException("Coordinate can not be null");
-        }
     }
 }
