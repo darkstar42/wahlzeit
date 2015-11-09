@@ -1,8 +1,6 @@
 package org.wahlzeit.model;
 
-import org.wahlzeit.services.DataObject;
-
-public class SphericCoordinate extends DataObject implements Coordinate {
+public class SphericCoordinate extends AbstractCoordinate {
     private double latitude;
     private double longitude;
     private double radius;
@@ -180,22 +178,6 @@ public class SphericCoordinate extends DataObject implements Coordinate {
         return getLongitudinalDistance(coordinate, false);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof Coordinate)) {
-            return false;
-        }
-
-        Coordinate other = (Coordinate) obj;
-        return isEqual(other);
-    }
-
     /**
      * Tests the equality with the given coordinate
      *
@@ -216,12 +198,6 @@ public class SphericCoordinate extends DataObject implements Coordinate {
         }
 
         return true;
-    }
-
-    protected void validateCoordinate(Coordinate coordinate) {
-        if (coordinate == null) {
-            throw new IllegalArgumentException("Coordinate can not be null");
-        }
     }
 }
 
