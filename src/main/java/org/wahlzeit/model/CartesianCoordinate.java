@@ -23,6 +23,8 @@ public class CartesianCoordinate extends AbstractCoordinate {
         setX(x);
         setY(y);
         setZ(z);
+
+        assertClassInvariants();
     }
 
     /**
@@ -36,11 +38,13 @@ public class CartesianCoordinate extends AbstractCoordinate {
      * @methodtype set
      */
     public void setX(double x) {
-        if (Double.isNaN(x)) {
+        if (!isValidCoordinate(x)) {
             throw new IllegalArgumentException("Invalid x value");
         }
 
         this.x = x;
+
+        assertClassInvariants();
     }
 
     /**
@@ -54,11 +58,13 @@ public class CartesianCoordinate extends AbstractCoordinate {
      * @methodtype set
      */
     public void setY(double y) {
-        if (Double.isNaN(y)) {
+        if (!isValidCoordinate(y)) {
             throw new IllegalArgumentException("Invalid y value");
         }
 
         this.y = y;
+
+        assertClassInvariants();
     }
 
     /**
@@ -72,15 +78,19 @@ public class CartesianCoordinate extends AbstractCoordinate {
      * @methodtype set
      */
     public void setZ(double z) {
-        if (Double.isNaN(z)) {
+        if (!isValidCoordinate(z)) {
             throw new IllegalArgumentException("Invalid z value");
         }
 
         this.z = z;
+
+        assertClassInvariants();
     }
 
     @Override
     protected SphericCoordinate asSphericCoordinate() {
+        assertClassInvariants();
+
         double x = getX();
         double y = getY();
         double z = getZ();
@@ -94,6 +104,24 @@ public class CartesianCoordinate extends AbstractCoordinate {
         double lon = Math.atan(Math.sqrt(x * x + y * y) / z);
 
         return new SphericCoordinate(Math.toDegrees(lat), Math.toDegrees(lon), radius);
+    }
+
+    /**
+     * Returns whether the given coordinate value is valid
+     *
+     * @param c Coordinate value to validate
+     * @return True if the given coordinate value is valid, false otherwise
+     */
+    private boolean isValidCoordinate(double c) {
+        return !(Double.isNaN(c));
+    }
+
+    @Override
+    protected void assertClassInvariants() {
+        if (!isValidCoordinate(getX()) || !isValidCoordinate(getY())
+                || !isValidCoordinate(getZ())) {
+            throw new IllegalStateException("CartesianCoordinate has invalid state");
+        }
     }
 
     @Override

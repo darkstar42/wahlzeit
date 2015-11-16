@@ -26,9 +26,15 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
     public double getDistance(Coordinate coordinate) {
         validateCoordinate(coordinate);
 
+        assertClassInvariants();
+
         SphericCoordinate other = ((AbstractCoordinate) coordinate).asSphericCoordinate();
 
-        return doGetDistance(other);
+        double distance = doGetDistance(other);
+
+        assertClassInvariants();
+
+        return distance;
     }
 
     /**
@@ -47,6 +53,8 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
     @Override
     public boolean isEqual(Coordinate coordinate) {
         validateCoordinate(coordinate);
+
+        assertClassInvariants();
 
         SphericCoordinate other = ((AbstractCoordinate) coordinate).asSphericCoordinate();
 
@@ -69,6 +77,13 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
      * @return Spheric coordinate representation
      */
     protected abstract SphericCoordinate asSphericCoordinate();
+
+    /**
+     * Asserts class invariants
+     *
+     * @throws IllegalStateException If one of the class invariants does not hold
+     */
+    protected abstract void assertClassInvariants();
 
     /**
      * @methodtype get

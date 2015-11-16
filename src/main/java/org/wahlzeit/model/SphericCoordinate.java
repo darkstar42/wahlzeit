@@ -15,26 +15,26 @@ public class SphericCoordinate extends AbstractCoordinate {
     }
 
     /**
-     * @methodtype constructor
-     *
      * @param latitude
      * @param longitude
+     * @methodtype constructor
      */
     public SphericCoordinate(double latitude, double longitude) {
         this(latitude, longitude, EARTH_RADIUS);
     }
 
     /**
-     * @methodtype constructor
-     *
      * @param latitude
      * @param longitude
      * @param radius
+     * @methodtype constructor
      */
     public SphericCoordinate(double latitude, double longitude, double radius) {
         setLatitude(latitude);
         setLongitude(longitude);
         setRadius(radius);
+
+        assertClassInvariants();
     }
 
     /**
@@ -57,11 +57,13 @@ public class SphericCoordinate extends AbstractCoordinate {
      * @methodtype set
      */
     public void setLatitude(double latitude) {
-        if (Double.isNaN(latitude) || latitude > 90.0 || latitude < -90.0) {
+        if (!isValidLatitude(latitude)) {
             throw new IllegalArgumentException("Invalid latitudinal value");
         }
 
         this.latitude = Math.toRadians(latitude);
+
+        assertClassInvariants();
     }
 
     /**
@@ -84,11 +86,13 @@ public class SphericCoordinate extends AbstractCoordinate {
      * @methodtype set
      */
     public void setLongitude(double longitude) {
-        if (Double.isNaN(longitude) || longitude > 180.0 || longitude < -180.0) {
+        if (!isValidLongitude(longitude)) {
             throw new IllegalArgumentException("Invalid longitudinal value");
         }
 
         this.longitude = Math.toRadians(longitude);
+
+        assertClassInvariants();
     }
 
     @Override
@@ -100,11 +104,13 @@ public class SphericCoordinate extends AbstractCoordinate {
      * @methodtype set
      */
     public void setRadius(double radius) {
-        if (Double.isNaN(radius) || radius < 0.0) {
+        if (!isValidRadius(radius)) {
             throw new IllegalArgumentException("Invalid radius");
         }
 
         this.radius = radius;
+
+        assertClassInvariants();
     }
 
     @Override
@@ -127,6 +133,8 @@ public class SphericCoordinate extends AbstractCoordinate {
     public double getLatitudinalDistance(Coordinate coordinate, boolean asRadian) {
         validateCoordinate(coordinate);
 
+        assertClassInvariants();
+
         SphericCoordinate other = ((AbstractCoordinate) coordinate).asSphericCoordinate();
 
         return Math.abs(getLatitude(asRadian) - other.getLatitude(asRadian));
@@ -146,6 +154,8 @@ public class SphericCoordinate extends AbstractCoordinate {
     public double getLongitudinalDistance(Coordinate coordinate, boolean asRadian) {
         validateCoordinate(coordinate);
 
+        assertClassInvariants();
+
         SphericCoordinate other = ((AbstractCoordinate) coordinate).asSphericCoordinate();
 
         return Math.abs(getLongitude(asRadian) - other.getLongitude(asRadian));
@@ -161,7 +171,46 @@ public class SphericCoordinate extends AbstractCoordinate {
 
     @Override
     protected SphericCoordinate asSphericCoordinate() {
+        assertClassInvariants();
+
         return this;
     }
-}
 
+    /**
+     * Returns whether the given latitude is valid
+     *
+     * @param latitude Latitude to validate
+     * @return True if the given latitude is valid, false otherwise
+     */
+    protected boolean isValidLatitude(double latitude) {
+        return !(Double.isNaN(latitude) || latitude > 90.0 || latitude < -90.0);
+    }
+
+    /**
+     * Returns whether the given longitude is valid
+     *
+     * @param longitude Longitude to validate
+     * @return True if the given longitude is valid, false otherwise
+     */
+    private boolean isValidLongitude(double longitude) {
+        return !(Double.isNaN(longitude) || longitude > 180.0 || longitude < -180.0);
+    }
+
+    /**
+     * Returns whether the given radius is valid
+     *
+     * @param radius Radius to validate
+     * @return True if the given radius is valid, false otherwise
+     */
+    private boolean isValidRadius(double radius) {
+        return !(Double.isNaN(radius) || radius < 0.0);
+    }
+
+    @Override
+    protected void assertClassInvariants() {
+        if (!isValidLatitude(getLatitude()) || !isValidLongitude(getLongitude())
+                || !isValidRadius(getRadius())) {
+            throw new IllegalStateException("SphericCoordinate has invalid state");
+        }
+    }
+}
