@@ -5,46 +5,24 @@ public class CartesianCoordinate extends AbstractCoordinate {
     private double y;
     private double z;
 
+    /**
+     * @methodtype constructor
+     */
     public CartesianCoordinate() {
         this(0, 0, 0);
     }
 
+    /**
+     * @methodtype constructor
+     *
+     * @param x
+     * @param y
+     * @param z
+     */
     public CartesianCoordinate(double x, double y, double z) {
         setX(x);
         setY(y);
         setZ(z);
-    }
-
-    public CartesianCoordinate(Coordinate other) {
-        validateCoordinate(other);
-
-        if (other instanceof CartesianCoordinate) {
-            CartesianCoordinate cartesianCoordinate = (CartesianCoordinate) other;
-
-            setX(cartesianCoordinate.getX());
-            setY(cartesianCoordinate.getY());
-            setZ(cartesianCoordinate.getZ());
-            return;
-        }
-
-        if (other instanceof SphericCoordinate) {
-            SphericCoordinate sphericCoordinate = (SphericCoordinate) other;
-
-            double radius = sphericCoordinate.getRadius();
-            double lat = sphericCoordinate.getLatitude(true);
-            double lon = sphericCoordinate.getLongitude(true);
-
-            double x = radius * Math.sin(lon) * Math.cos(lat);
-            double y = radius * Math.sin(lon) * Math.sin(lat);
-            double z = radius * Math.cos(lon);
-
-            setX(x);
-            setY(y);
-            setZ(z);
-            return;
-        }
-
-        throw new UnsupportedOperationException("Constructor not implemented for " + other.getClass().getName());
     }
 
     /**
@@ -102,29 +80,34 @@ public class CartesianCoordinate extends AbstractCoordinate {
     }
 
     @Override
-    public double getDistance(Coordinate coordinate) {
-        validateCoordinate(coordinate);
+    protected SphericCoordinate asSphericCoordinate() {
+        double x = getX();
+        double y = getY();
+        double z = getZ();
 
-        SphericCoordinate coordOne = new SphericCoordinate(this);
-        SphericCoordinate coordTwo = new SphericCoordinate(coordinate);
+        if (x == 0 || z == 0) {
+            return new SphericCoordinate();
+        }
 
-        return coordOne.getDistance(coordTwo);
+        double radius = Math.sqrt(x * x + y * y + z * z);
+        double lat = Math.atan(y / x);
+        double lon = Math.atan(Math.sqrt(x * x + y * y) / z);
+
+        return new SphericCoordinate(Math.toDegrees(lat), Math.toDegrees(lon), radius);
     }
 
     @Override
-    public boolean isEqual(Coordinate coordinate) {
-        CartesianCoordinate other = new CartesianCoordinate(coordinate);
+    protected double getLatitude() {
+        return asSphericCoordinate().getLatitude();
+    }
 
-        if (Math.abs(getX() - other.getX()) > 0.1) {
-            return false;
-        }
-        if (Math.abs(getY() - other.getY()) > 0.1) {
-            return false;
-        }
-        if (Math.abs(getZ() - other.getZ()) > 0.1) {
-            return false;
-        }
+    @Override
+    protected double getLongitude() {
+        return asSphericCoordinate().getLongitude();
+    }
 
-        return true;
+    @Override
+    protected double getRadius() {
+        return asSphericCoordinate().getRadius();
     }
 }

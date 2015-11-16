@@ -7,50 +7,34 @@ public class SphericCoordinate extends AbstractCoordinate {
 
     private final static double EARTH_RADIUS = 6371;
 
+    /**
+     * @methodtype constructor
+     */
     public SphericCoordinate() {
         this(0, 0, 0);
     }
 
+    /**
+     * @methodtype constructor
+     *
+     * @param latitude
+     * @param longitude
+     */
     public SphericCoordinate(double latitude, double longitude) {
         this(latitude, longitude, EARTH_RADIUS);
     }
 
+    /**
+     * @methodtype constructor
+     *
+     * @param latitude
+     * @param longitude
+     * @param radius
+     */
     public SphericCoordinate(double latitude, double longitude, double radius) {
         setLatitude(latitude);
         setLongitude(longitude);
         setRadius(radius);
-    }
-
-    public SphericCoordinate(Coordinate other) {
-        validateCoordinate(other);
-
-        if (other instanceof SphericCoordinate) {
-            SphericCoordinate sphericCoordinate = (SphericCoordinate) other;
-
-            setLatitude(sphericCoordinate.getLatitude());
-            setLongitude(sphericCoordinate.getLongitude());
-            setRadius(sphericCoordinate.getRadius());
-            return;
-        }
-
-        if (other instanceof CartesianCoordinate) {
-            CartesianCoordinate cartesianCoordinate = (CartesianCoordinate) other;
-
-            double x = cartesianCoordinate.getX();
-            double y = cartesianCoordinate.getY();
-            double z = cartesianCoordinate.getZ();
-
-            double radius = Math.sqrt(x * x + y * y + z * z);
-            double lat = Math.atan(y / x);
-            double lon = Math.atan(Math.sqrt(x * x + y * y) / z);
-
-            setLatitude(Math.toDegrees(lat));
-            setLongitude(Math.toDegrees(lon));
-            setRadius(radius);
-            return;
-        }
-
-        throw new UnsupportedOperationException("Constructor not implemented for " + other.getClass().getName());
     }
 
     /**
@@ -64,9 +48,7 @@ public class SphericCoordinate extends AbstractCoordinate {
         }
     }
 
-    /**
-     * @methodtype get
-     */
+    @Override
     public double getLatitude() {
         return getLatitude(false);
     }
@@ -93,10 +75,7 @@ public class SphericCoordinate extends AbstractCoordinate {
         }
     }
 
-    /**
-     * @methodtype get
-     * @methodproperties convenience
-     */
+    @Override
     public double getLongitude() {
         return getLongitude(false);
     }
@@ -112,10 +91,7 @@ public class SphericCoordinate extends AbstractCoordinate {
         this.longitude = Math.toRadians(longitude);
     }
 
-    /**
-     * @methodtype get
-     * @methodproperties convenience
-     */
+    @Override
     public double getRadius() {
         return radius;
     }
@@ -124,17 +100,16 @@ public class SphericCoordinate extends AbstractCoordinate {
      * @methodtype set
      */
     public void setRadius(double radius) {
-        if (Double.isNaN(radius) || radius <= 0.0) {
+        if (Double.isNaN(radius) || radius < 0.0) {
             throw new IllegalArgumentException("Invalid radius");
         }
 
         this.radius = radius;
     }
 
-    public double getDistance(Coordinate coordinate) {
-        validateCoordinate(coordinate);
-
-        SphericCoordinate other = new SphericCoordinate(coordinate);
+    @Override
+    protected double doGetDistance(SphericCoordinate other) {
+        validateCoordinate(other);
 
         double lonDistance = getLongitudinalDistance(other, true);
 
@@ -146,10 +121,13 @@ public class SphericCoordinate extends AbstractCoordinate {
         return getRadius() * sigma;
     }
 
+    /**
+     * @methodtype get
+     */
     public double getLatitudinalDistance(Coordinate coordinate, boolean asRadian) {
         validateCoordinate(coordinate);
 
-        SphericCoordinate other = new SphericCoordinate(coordinate);
+        SphericCoordinate other = ((AbstractCoordinate) coordinate).asSphericCoordinate();
 
         return Math.abs(getLatitude(asRadian) - other.getLatitude(asRadian));
     }
@@ -162,10 +140,13 @@ public class SphericCoordinate extends AbstractCoordinate {
         return getLatitudinalDistance(coordinate, false);
     }
 
+    /**
+     * @methodtype get
+     */
     public double getLongitudinalDistance(Coordinate coordinate, boolean asRadian) {
         validateCoordinate(coordinate);
 
-        SphericCoordinate other = new SphericCoordinate(coordinate);
+        SphericCoordinate other = ((AbstractCoordinate) coordinate).asSphericCoordinate();
 
         return Math.abs(getLongitude(asRadian) - other.getLongitude(asRadian));
     }
@@ -178,26 +159,9 @@ public class SphericCoordinate extends AbstractCoordinate {
         return getLongitudinalDistance(coordinate, false);
     }
 
-    /**
-     * Tests the equality with the given coordinate
-     *
-     * @param coordinate The coordinate object to test for equality
-     * @return True if the given coordinate is equal, false otherwise
-     */
-    public boolean isEqual(Coordinate coordinate) {
-        SphericCoordinate other = new SphericCoordinate(coordinate);
-
-        if (Math.abs(getLatitude() - other.getLatitude()) > 0.1) {
-            return false;
-        }
-        if (Math.abs(getLongitude() - other.getLongitude()) > 0.1) {
-            return false;
-        }
-        if (Math.abs(getRadius() - other.getRadius()) > 0.1) {
-            return false;
-        }
-
-        return true;
+    @Override
+    protected SphericCoordinate asSphericCoordinate() {
+        return this;
     }
 }
 
