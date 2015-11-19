@@ -107,11 +107,6 @@ public class SphericCoordinateTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void setRadiusWithZeroShouldCauseException() {
-        coordinateA.setRadius(0.0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void setRadiusWithNegativeValueShouldCauseException() {
         coordinateA.setRadius(-0.1);
     }
