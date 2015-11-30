@@ -1,7 +1,15 @@
 package org.wahlzeit.model;
 
 import com.googlecode.objectify.annotation.Subclass;
+import org.wahlzeit.utils.Pattern;
 
+@Pattern(
+    name = "Abstract Factory",
+    participants = {
+        "AbstractProduct",
+        "ConcreteProduct"
+    }
+)
 @Subclass(index = true)
 public class VegetablePhoto extends Photo {
     protected String scientificName = "Cucurbita";

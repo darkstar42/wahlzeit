@@ -31,9 +31,17 @@ import org.wahlzeit.services.DataObject;
 import org.wahlzeit.services.EmailAddress;
 import org.wahlzeit.services.Language;
 import org.wahlzeit.services.ObjectManager;
+import org.wahlzeit.utils.Pattern;
 
 import java.util.Map;
 
+@Pattern(
+	name = "Abstract Factory",
+	participants = {
+			"AbstractProduct",
+			"ConcreteProduct"
+	}
+)
 /**
  * A photo represents a user-provided (uploaded) photo.
  */

@@ -1,5 +1,7 @@
 package org.wahlzeit.model;
 
+import org.wahlzeit.utils.Pattern;
+
 public class SphericCoordinate extends AbstractCoordinate {
     private double latitude;
     private double longitude;
@@ -206,6 +208,10 @@ public class SphericCoordinate extends AbstractCoordinate {
         return !(Double.isNaN(radius) || radius < 0.0);
     }
 
+    @Pattern(
+        name = "Template method",
+        participants = { "ConcreteClass" }
+    )
     @Override
     protected void assertClassInvariants() {
         if (!isValidLatitude(getLatitude()) || !isValidLongitude(getLongitude())
