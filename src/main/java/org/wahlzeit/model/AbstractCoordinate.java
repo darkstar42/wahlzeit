@@ -1,6 +1,7 @@
 package org.wahlzeit.model;
 
 import org.wahlzeit.services.DataObject;
+import org.wahlzeit.utils.Pattern;
 
 /**
  * Abstract coordinate class
@@ -78,6 +79,10 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
      */
     protected abstract SphericCoordinate asSphericCoordinate();
 
+    @Pattern(
+        name = "Template method",
+        participants = { "AbstractClass" }
+    )
     /**
      * Asserts class invariants
      *

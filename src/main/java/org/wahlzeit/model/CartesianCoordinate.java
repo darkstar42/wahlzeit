@@ -1,5 +1,7 @@
 package org.wahlzeit.model;
 
+import org.wahlzeit.utils.Pattern;
+
 public class CartesianCoordinate extends AbstractCoordinate {
     private double x;
     private double y;
@@ -116,6 +118,10 @@ public class CartesianCoordinate extends AbstractCoordinate {
         return !(Double.isNaN(c));
     }
 
+    @Pattern(
+        name = "Template method",
+        participants = { "ConcreteClass" }
+    )
     @Override
     protected void assertClassInvariants() {
         if (!isValidCoordinate(getX()) || !isValidCoordinate(getY())
