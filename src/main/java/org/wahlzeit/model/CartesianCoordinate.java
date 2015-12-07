@@ -22,9 +22,9 @@ public class CartesianCoordinate extends AbstractCoordinate {
      * @param z
      */
     public CartesianCoordinate(double x, double y, double z) {
-        setX(x);
-        setY(y);
-        setZ(z);
+        this.x = x;
+        this.y = y;
+        this.z = z;
 
         assertClassInvariants();
     }
@@ -39,14 +39,12 @@ public class CartesianCoordinate extends AbstractCoordinate {
     /**
      * @methodtype set
      */
-    public void setX(double x) {
+    public CartesianCoordinate setX(double x) {
         if (!isValidCoordinate(x)) {
             throw new IllegalArgumentException("Invalid x value");
         }
 
-        this.x = x;
-
-        assertClassInvariants();
+        return new CartesianCoordinate(x, getY(), getZ());
     }
 
     /**
@@ -59,14 +57,12 @@ public class CartesianCoordinate extends AbstractCoordinate {
     /**
      * @methodtype set
      */
-    public void setY(double y) {
+    public CartesianCoordinate setY(double y) {
         if (!isValidCoordinate(y)) {
             throw new IllegalArgumentException("Invalid y value");
         }
 
-        this.y = y;
-
-        assertClassInvariants();
+        return new CartesianCoordinate(getX(), y, getZ());
     }
 
     /**
@@ -79,14 +75,12 @@ public class CartesianCoordinate extends AbstractCoordinate {
     /**
      * @methodtype set
      */
-    public void setZ(double z) {
+    public CartesianCoordinate setZ(double z) {
         if (!isValidCoordinate(z)) {
             throw new IllegalArgumentException("Invalid z value");
         }
 
-        this.z = z;
-
-        assertClassInvariants();
+        return new CartesianCoordinate(getX(), getY(), z);
     }
 
     @Override

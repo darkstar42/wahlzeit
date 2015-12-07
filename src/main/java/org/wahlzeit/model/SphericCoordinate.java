@@ -32,9 +32,9 @@ public class SphericCoordinate extends AbstractCoordinate {
      * @methodtype constructor
      */
     public SphericCoordinate(double latitude, double longitude, double radius) {
-        setLatitude(latitude);
-        setLongitude(longitude);
-        setRadius(radius);
+        this.latitude = Math.toRadians(latitude);
+        this.longitude = Math.toRadians(longitude);
+        this.radius = radius;
 
         assertClassInvariants();
     }
@@ -58,14 +58,12 @@ public class SphericCoordinate extends AbstractCoordinate {
     /**
      * @methodtype set
      */
-    public void setLatitude(double latitude) {
+    public SphericCoordinate setLatitude(double latitude) {
         if (!isValidLatitude(latitude)) {
             throw new IllegalArgumentException("Invalid latitudinal value");
         }
 
-        this.latitude = Math.toRadians(latitude);
-
-        assertClassInvariants();
+        return new SphericCoordinate(latitude, getLongitude(), getRadius());
     }
 
     /**
@@ -87,14 +85,12 @@ public class SphericCoordinate extends AbstractCoordinate {
     /**
      * @methodtype set
      */
-    public void setLongitude(double longitude) {
+    public SphericCoordinate setLongitude(double longitude) {
         if (!isValidLongitude(longitude)) {
             throw new IllegalArgumentException("Invalid longitudinal value");
         }
 
-        this.longitude = Math.toRadians(longitude);
-
-        assertClassInvariants();
+        return new SphericCoordinate(getLatitude(), longitude, getRadius());
     }
 
     @Override
@@ -105,14 +101,12 @@ public class SphericCoordinate extends AbstractCoordinate {
     /**
      * @methodtype set
      */
-    public void setRadius(double radius) {
+    public SphericCoordinate setRadius(double radius) {
         if (!isValidRadius(radius)) {
             throw new IllegalArgumentException("Invalid radius");
         }
 
-        this.radius = radius;
-
-        assertClassInvariants();
+        return new SphericCoordinate(getLatitude(), getLongitude(), radius);
     }
 
     @Override
