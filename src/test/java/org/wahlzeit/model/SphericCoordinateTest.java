@@ -1,9 +1,12 @@
 package org.wahlzeit.model;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotSame;
+import static junit.framework.Assert.assertSame;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -13,27 +16,29 @@ import static org.junit.Assert.assertTrue;
 public class SphericCoordinateTest {
     private final static double DELTA = 0.01;
 
-    private SphericCoordinate coordinateA;
-    private SphericCoordinate coordinateB;
-    private SphericCoordinate coordinateC;
-    private SphericCoordinate coordinateD;
+    private AbstractCoordinate coordinateA;
+    private AbstractCoordinate coordinateB;
+    private AbstractCoordinate coordinateC;
+    private AbstractCoordinate coordinateD;
 
-    private SphericCoordinate coordNuremberg;
-    private SphericCoordinate coordErlangen;
-    private SphericCoordinate coordStockholm;
-    private SphericCoordinate coordUmea;
+    private AbstractCoordinate coordNuremberg;
+    private AbstractCoordinate coordErlangen;
+    private AbstractCoordinate coordStockholm;
+    private AbstractCoordinate coordUmea;
 
     @Before
     public void before() {
-        coordinateA = new SphericCoordinate(0, 0);
-        coordinateB = new SphericCoordinate(45, -90);
-        coordinateC = new SphericCoordinate(45, -90);
-        coordinateD = new SphericCoordinate(-90, 45);
+        AbstractCoordinate.resetCoordinateCache();
 
-        coordNuremberg = new SphericCoordinate(49.455556, 11.078611);
-        coordErlangen = new SphericCoordinate(49.596361, 11.004311);
-        coordStockholm = new SphericCoordinate(59.325, 18.05);
-        coordUmea = new SphericCoordinate(63.826944, 20.266944);
+        coordinateA = SphericCoordinate.createFrom(0, 0);
+        coordinateB = SphericCoordinate.createFrom(45, -90);
+        coordinateC = SphericCoordinate.createFrom(45, -90);
+        coordinateD = SphericCoordinate.createFrom(-90, 45);
+
+        coordNuremberg = SphericCoordinate.createFrom(49.455556, 11.078611);
+        coordErlangen = SphericCoordinate.createFrom(49.596361, 11.004311);
+        coordStockholm = SphericCoordinate.createFrom(59.325, 18.05);
+        coordUmea = SphericCoordinate.createFrom(63.826944, 20.266944);
     }
 
     @Test
@@ -76,44 +81,71 @@ public class SphericCoordinateTest {
         assertEquals(0.0, coordStockholm.getDistance(coordStockholm), DELTA);
     }
 
+    @Test
+    public void setLatitudeShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((SphericCoordinate) coordErlangen).setLatitude(63.826944);
+        AbstractCoordinate oldCoordinate = ((SphericCoordinate) modifiedCoordinate).setLatitude(49.596361);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
+    }
+
+    @Test
+    public void setLongitudeShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((SphericCoordinate) coordErlangen).setLongitude(20.266944);
+        AbstractCoordinate oldCoordinate = ((SphericCoordinate) modifiedCoordinate).setLongitude(11.004311);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
+    }
+
+    @Test
+    public void setRadiusShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((SphericCoordinate) coordErlangen).setRadius(SphericCoordinate.EARTH_RADIUS - 42.0);
+        AbstractCoordinate oldCoordinate = ((SphericCoordinate) modifiedCoordinate).setRadius(SphericCoordinate.EARTH_RADIUS);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void setLatitudeWithTooLargeAngleShouldCauseException() {
-        coordinateA.setLatitude(90.1);
+        ((SphericCoordinate) coordinateA).setLatitude(90.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setLatitudeWithTooSmallAngleShouldCauseException() {
-        coordinateA.setLatitude(-90.1);
+        ((SphericCoordinate) coordinateA).setLatitude(-90.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setLatitudeWithNaNShouldCauseException() {
-        coordinateA.setLatitude(Double.NaN);
+        ((SphericCoordinate) coordinateA).setLatitude(Double.NaN);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setLongitudeWithTooLargeAngleShouldCauseException() {
-        coordinateA.setLongitude(180.1);
+        ((SphericCoordinate) coordinateA).setLongitude(180.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setLongitudeWithTooSmallAngleShouldCauseException() {
-        coordinateA.setLongitude(-180.1);
+        ((SphericCoordinate) coordinateA).setLongitude(-180.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setLongitudeWithNaNShouldCauseException() {
-        coordinateA.setLongitude(Double.NaN);
+        ((SphericCoordinate) coordinateA).setLongitude(Double.NaN);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setRadiusWithNegativeValueShouldCauseException() {
-        coordinateA.setRadius(-0.1);
+        ((SphericCoordinate) coordinateA).setRadius(-0.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setRadiusWithNaNShouldCauseException() {
-        coordinateA.setRadius(Double.NaN);
+        ((SphericCoordinate) coordinateA).setRadius(Double.NaN);
     }
 
     @Test(expected = IllegalArgumentException.class)

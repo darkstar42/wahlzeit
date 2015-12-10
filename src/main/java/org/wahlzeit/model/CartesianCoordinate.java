@@ -9,22 +9,15 @@ public class CartesianCoordinate extends AbstractCoordinate {
 
     /**
      * @methodtype constructor
-     */
-    public CartesianCoordinate() {
-        this(0, 0, 0);
-    }
-
-    /**
-     * @methodtype constructor
      *
-     * @param x
-     * @param y
-     * @param z
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param z z-coordinate
      */
-    public CartesianCoordinate(double x, double y, double z) {
-        setX(x);
-        setY(y);
-        setZ(z);
+    private CartesianCoordinate(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
 
         assertClassInvariants();
     }
@@ -39,14 +32,12 @@ public class CartesianCoordinate extends AbstractCoordinate {
     /**
      * @methodtype set
      */
-    public void setX(double x) {
+    public AbstractCoordinate setX(double x) {
         if (!isValidCoordinate(x)) {
             throw new IllegalArgumentException("Invalid x value");
         }
 
-        this.x = x;
-
-        assertClassInvariants();
+        return createFrom(x, getY(), getZ());
     }
 
     /**
@@ -59,14 +50,12 @@ public class CartesianCoordinate extends AbstractCoordinate {
     /**
      * @methodtype set
      */
-    public void setY(double y) {
+    public AbstractCoordinate setY(double y) {
         if (!isValidCoordinate(y)) {
             throw new IllegalArgumentException("Invalid y value");
         }
 
-        this.y = y;
-
-        assertClassInvariants();
+        return createFrom(getX(), y, getZ());
     }
 
     /**
@@ -79,33 +68,24 @@ public class CartesianCoordinate extends AbstractCoordinate {
     /**
      * @methodtype set
      */
-    public void setZ(double z) {
+    public AbstractCoordinate setZ(double z) {
         if (!isValidCoordinate(z)) {
             throw new IllegalArgumentException("Invalid z value");
         }
 
-        this.z = z;
-
-        assertClassInvariants();
+        return createFrom(getX(), getY(), z);
     }
 
-    @Override
-    protected SphericCoordinate asSphericCoordinate() {
-        assertClassInvariants();
-
-        double x = getX();
-        double y = getY();
-        double z = getZ();
-
-        if (x == 0 || z == 0) {
-            return new SphericCoordinate();
-        }
-
-        double radius = Math.sqrt(x * x + y * y + z * z);
-        double lat = Math.atan(y / x);
-        double lon = Math.atan(Math.sqrt(x * x + y * y) / z);
-
-        return new SphericCoordinate(Math.toDegrees(lat), Math.toDegrees(lon), radius);
+    /**
+     * Creates a new CartesianCoordinate instance for the given x, y and z values
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param z z-coordinate
+     * @return New CartesianCoordinate instance
+     */
+    protected static AbstractCoordinate doCreateCoordinate(double x, double y, double z) {
+        return new CartesianCoordinate(x, y, z);
     }
 
     /**
@@ -114,7 +94,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
      * @param c Coordinate value to validate
      * @return True if the given coordinate value is valid, false otherwise
      */
-    private boolean isValidCoordinate(double c) {
+    private static boolean isValidCoordinate(double c) {
         return !(Double.isNaN(c));
     }
 
@@ -130,18 +110,84 @@ public class CartesianCoordinate extends AbstractCoordinate {
         }
     }
 
-    @Override
-    protected double getLatitude() {
-        return asSphericCoordinate().getLatitude();
+    /**
+     * Computes the latitude in radians for the given coordinate values
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param z z-coordinate
+     * @return Latitude in radians
+     */
+    public double doGetLatitude(double x, double y, double z) {
+        if (x == 0 || z == 0) return 0;
+
+        return Math.atan(y / x);
+    }
+
+    /**
+     * Computes the longitude in radians for the given coordinate values
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param z z-coordinate
+     * @return Longitude in radians
+     */
+    public double doGetLongitude(double x, double y, double z) {
+        if (x == 0 || z == 0) return 0;
+
+        return Math.atan(Math.sqrt(x * x + y * y) / z);
+    }
+
+    /**
+     * Computes the radius for the given coordinate values
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param z z-coordinate
+     * @return Radius
+     */
+    public double doGetRadius(double x, double y, double z) {
+        return Math.sqrt(x * x + y * y + z * z);
     }
 
     @Override
-    protected double getLongitude() {
-        return asSphericCoordinate().getLongitude();
+    protected double getLatitude(boolean asRadian) {
+        double latitude = doGetLatitude(getX(), getY(), getZ());
+
+        if (asRadian) {
+            return latitude;
+        } else {
+            return Math.toDegrees(latitude);
+        }
+    }
+
+    @Override
+    protected double getLongitude(boolean asRadian) {
+        double longitude = doGetLongitude(getX(), getY(), getZ());
+
+        if (asRadian) {
+            return longitude;
+        } else {
+            return Math.toDegrees(longitude);
+        }
     }
 
     @Override
     protected double getRadius() {
-        return asSphericCoordinate().getRadius();
+        return doGetRadius(getX(), getY(), getZ());
+    }
+
+    /**
+     * Returns a coordinate object for the given x, y and z values
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param z z-coordinate
+     * @return Coordinate instance
+     */
+    public static AbstractCoordinate createFrom(double x, double y, double z) {
+        AbstractCoordinate newCoordinate = doCreateCoordinate(x, y, z);
+
+        return doGetCachedCoordinate(newCoordinate);
     }
 }
