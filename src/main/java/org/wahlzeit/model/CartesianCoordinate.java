@@ -9,17 +9,10 @@ public class CartesianCoordinate extends AbstractCoordinate {
 
     /**
      * @methodtype constructor
-     */
-    private CartesianCoordinate() {
-        this(0, 0, 0);
-    }
-
-    /**
-     * @methodtype constructor
      *
-     * @param x
-     * @param y
-     * @param z
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param z z-coordinate
      */
     private CartesianCoordinate(double x, double y, double z) {
         this.x = x;
@@ -83,6 +76,14 @@ public class CartesianCoordinate extends AbstractCoordinate {
         return createFrom(getX(), getY(), z);
     }
 
+    /**
+     * Creates a new CartesianCoordinate instance for the given x, y and z values
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param z z-coordinate
+     * @return New CartesianCoordinate instance
+     */
     protected static AbstractCoordinate doCreateCoordinate(double x, double y, double z) {
         return new CartesianCoordinate(x, y, z);
     }
@@ -176,6 +177,14 @@ public class CartesianCoordinate extends AbstractCoordinate {
         return doGetRadius(getX(), getY(), getZ());
     }
 
+    /**
+     * Returns a coordinate object for the given x, y and z values
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param z z-coordinate
+     * @return Coordinate instance
+     */
     public static AbstractCoordinate createFrom(double x, double y, double z) {
         AbstractCoordinate newCoordinate = doCreateCoordinate(x, y, z);
 

@@ -10,25 +10,9 @@ public class SphericCoordinate extends AbstractCoordinate {
     public final static double EARTH_RADIUS = 6371;
 
     /**
-     * @methodtype constructor
-     */
-    private SphericCoordinate() {
-        this(0, 0, 0);
-    }
-
-    /**
-     * @param latitude
-     * @param longitude
-     * @methodtype constructor
-     */
-    private SphericCoordinate(double latitude, double longitude) {
-        this(latitude, longitude, EARTH_RADIUS);
-    }
-
-    /**
-     * @param latitude
-     * @param longitude
-     * @param radius
+     * @param latitude Latitude in degrees
+     * @param longitude Longitude in degrees
+     * @param radius Radius in kilometers
      * @methodtype constructor
      */
     private SphericCoordinate(double latitude, double longitude, double radius) {
@@ -42,6 +26,7 @@ public class SphericCoordinate extends AbstractCoordinate {
     /**
      * @methodtype get
      */
+    @Override
     public double getLatitude(boolean asRadian) {
         if (asRadian) {
             return latitude;
@@ -64,6 +49,7 @@ public class SphericCoordinate extends AbstractCoordinate {
     /**
      * @methodtype get
      */
+    @Override
     public double getLongitude(boolean asRadian) {
         if (asRadian) {
             return longitude;
@@ -111,16 +97,41 @@ public class SphericCoordinate extends AbstractCoordinate {
         }
     }
 
+    /**
+     * Creates a new SphericCoordinate instance for the given latitude, longitude and radius
+     *
+     * @param latitude Latitude in degrees
+     * @param longitude Longitude in degrees
+     * @param radius Radius in kilometers
+     * @return New SphericCoordinate instance
+     */
     protected static AbstractCoordinate doCreateCoordinate(double latitude, double longitude, double radius) {
         return new SphericCoordinate(latitude, longitude, radius);
     }
 
+    /**
+     * Returns a coordinate object for the given latitude, longitude and radius values
+     *
+     * @param latitude Latitude in degrees
+     * @param longitude Longitude in degrees
+     * @param radius Radius in kilometers
+     * @return Coordinate instance
+     */
     public static AbstractCoordinate createFrom(double latitude, double longitude, double radius) {
         AbstractCoordinate newCoordinate = doCreateCoordinate(latitude, longitude, radius);
 
         return doGetCachedCoordinate(newCoordinate);
     }
 
+    /**
+     * Returns a coordinate object for the given latitude and longitude values
+     *
+     * Uses the earth radius as radius
+     *
+     * @param latitude Latitude in degrees
+     * @param longitude Longitude in degrees
+     * @return Coordinate instance
+     */
     public static AbstractCoordinate createFrom(double latitude, double longitude) {
         return createFrom(latitude, longitude, EARTH_RADIUS);
     }
