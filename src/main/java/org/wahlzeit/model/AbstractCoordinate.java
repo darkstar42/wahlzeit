@@ -3,10 +3,34 @@ package org.wahlzeit.model;
 import org.wahlzeit.services.DataObject;
 import org.wahlzeit.utils.Pattern;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Abstract coordinate class
  */
 public abstract class AbstractCoordinate extends DataObject implements Coordinate {
+    private static Map<String, AbstractCoordinate> coordinates = new HashMap<>();
+
+    protected static AbstractCoordinate doGetCachedCoordinate(AbstractCoordinate coordinate) {
+        String key = coordinate.toString();
+
+        if (coordinates.containsKey(key)) {
+            return coordinates.get(key);
+        } else {
+            coordinates.put(key, coordinate);
+            return coordinate;
+        }
+    }
+
+    protected static int doCreateHashCode(double latitude, double longitude, double radius) {
+        return asString(latitude, longitude, radius).hashCode();
+    }
+
+    protected static String asString(double latitude, double longitude, double radius) {
+        return String.format("[%.3f|%.3f|%.3f]", latitude, longitude, radius);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -29,7 +53,7 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
 
         assertClassInvariants();
 
-        SphericCoordinate other = ((AbstractCoordinate) coordinate).asSphericCoordinate();
+        AbstractCoordinate other = (AbstractCoordinate) coordinate;
 
         double distance = doGetDistance(other);
 
@@ -41,14 +65,62 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
     /**
      * Returns the spheric distance to the given coordinate
      *
-     * @param coordinate Coordinate to calculate the distance to
+     * @param other Coordinate to calculate the distance to
      * @return Spheric distance to the given coordinate
      */
-    protected double doGetDistance(SphericCoordinate coordinate) {
-        SphericCoordinate coordOne = this.asSphericCoordinate();
-        SphericCoordinate coordTwo = coordinate;
+    protected double doGetDistance(AbstractCoordinate other) {
+        validateCoordinate(other);
 
-        return coordOne.doGetDistance(coordTwo);
+        double lonDistance = getLongitudinalDistance(other, true);
+
+        double left = Math.sin(getLatitude(true)) * Math.sin(other.getLatitude(true));
+        double right = Math.cos(getLatitude(true)) * Math.cos(other.getLatitude(true)) * Math.cos(lonDistance);
+
+        double sigma = Math.acos(left + right);
+
+        return getRadius() * sigma;
+    }
+
+    /**
+     * @methodtype get
+     */
+    public double getLatitudinalDistance(Coordinate coordinate, boolean asRadian) {
+        validateCoordinate(coordinate);
+
+        assertClassInvariants();
+
+        AbstractCoordinate other = (AbstractCoordinate) coordinate;
+
+        return Math.abs(getLatitude(asRadian) - other.getLatitude(asRadian));
+    }
+
+    /**
+     * @methodtype get
+     * @methodproperties convenience
+     */
+    public double getLatitudinalDistance(Coordinate coordinate) {
+        return getLatitudinalDistance(coordinate, false);
+    }
+
+    /**
+     * @methodtype get
+     */
+    public double getLongitudinalDistance(Coordinate coordinate, boolean asRadian) {
+        validateCoordinate(coordinate);
+
+        assertClassInvariants();
+
+        AbstractCoordinate other = (AbstractCoordinate) coordinate;
+
+        return Math.abs(getLongitude(asRadian) - other.getLongitude(asRadian));
+    }
+
+    /**
+     * @methodtype get
+     * @methodproperties convenience
+     */
+    public double getLongitudinalDistance(Coordinate coordinate) {
+        return getLongitudinalDistance(coordinate, false);
     }
 
     @Override
@@ -57,7 +129,7 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
 
         assertClassInvariants();
 
-        SphericCoordinate other = ((AbstractCoordinate) coordinate).asSphericCoordinate();
+        AbstractCoordinate other = (AbstractCoordinate) coordinate;
 
         if (Math.abs(getLatitude() - other.getLatitude()) > 0.1) {
             return false;
@@ -72,12 +144,15 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
         return true;
     }
 
-    /**
-     * Returns the spheric representation of this coordinate
-     *
-     * @return Spheric coordinate representation
-     */
-    protected abstract SphericCoordinate asSphericCoordinate();
+    @Override
+    public String toString() {
+        return asString(getLatitude(), getLongitude(), getRadius());
+    }
+
+    @Override
+    public int hashCode() {
+        return doCreateHashCode(getLatitude(), getLongitude(), getRadius());
+    }
 
     @Pattern(
         name = "Template method",
@@ -93,12 +168,26 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
     /**
      * @methodtype get
      */
-    protected abstract double getLatitude();
+    protected double getLatitude() {
+        return getLatitude(false);
+    }
 
     /**
      * @methodtype get
      */
-    protected abstract double getLongitude();
+    protected abstract double getLatitude(boolean asRadian);
+
+    /**
+     * @methodtype get
+     */
+    protected double getLongitude() {
+        return getLongitude(false);
+    }
+
+    /**
+     * @methodtype get
+     */
+    protected abstract double getLongitude(boolean asRadian);
 
     /**
      * @methodtype get
@@ -120,5 +209,35 @@ public abstract class AbstractCoordinate extends DataObject implements Coordinat
         if (!(coordinate instanceof AbstractCoordinate)) {
             throw new UnsupportedOperationException("Unsupported coordination class");
         }
+    }
+
+    /**
+     * Returns whether the given latitude is valid
+     *
+     * @param latitude Latitude to validate
+     * @return True if the given latitude is valid, false otherwise
+     */
+    protected static boolean isValidLatitude(double latitude) {
+        return !(Double.isNaN(latitude) || latitude > 90.0 || latitude < -90.0);
+    }
+
+    /**
+     * Returns whether the given longitude is valid
+     *
+     * @param longitude Longitude to validate
+     * @return True if the given longitude is valid, false otherwise
+     */
+    protected static boolean isValidLongitude(double longitude) {
+        return !(Double.isNaN(longitude) || longitude > 180.0 || longitude < -180.0);
+    }
+
+    /**
+     * Returns whether the given radius is valid
+     *
+     * @param radius Radius to validate
+     * @return True if the given radius is valid, false otherwise
+     */
+    protected static boolean isValidRadius(double radius) {
+        return !(Double.isNaN(radius) || radius < 0.0);
     }
 }

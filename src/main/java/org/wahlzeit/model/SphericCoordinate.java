@@ -12,7 +12,7 @@ public class SphericCoordinate extends AbstractCoordinate {
     /**
      * @methodtype constructor
      */
-    public SphericCoordinate() {
+    private SphericCoordinate() {
         this(0, 0, 0);
     }
 
@@ -21,7 +21,7 @@ public class SphericCoordinate extends AbstractCoordinate {
      * @param longitude
      * @methodtype constructor
      */
-    public SphericCoordinate(double latitude, double longitude) {
+    private SphericCoordinate(double latitude, double longitude) {
         this(latitude, longitude, EARTH_RADIUS);
     }
 
@@ -31,7 +31,7 @@ public class SphericCoordinate extends AbstractCoordinate {
      * @param radius
      * @methodtype constructor
      */
-    public SphericCoordinate(double latitude, double longitude, double radius) {
+    private SphericCoordinate(double latitude, double longitude, double radius) {
         this.latitude = Math.toRadians(latitude);
         this.longitude = Math.toRadians(longitude);
         this.radius = radius;
@@ -50,20 +50,15 @@ public class SphericCoordinate extends AbstractCoordinate {
         }
     }
 
-    @Override
-    public double getLatitude() {
-        return getLatitude(false);
-    }
-
     /**
      * @methodtype set
      */
-    public SphericCoordinate setLatitude(double latitude) {
+    public AbstractCoordinate setLatitude(double latitude) {
         if (!isValidLatitude(latitude)) {
             throw new IllegalArgumentException("Invalid latitudinal value");
         }
 
-        return new SphericCoordinate(latitude, getLongitude(), getRadius());
+        return createFrom(latitude, getLongitude(), getRadius());
     }
 
     /**
@@ -77,20 +72,15 @@ public class SphericCoordinate extends AbstractCoordinate {
         }
     }
 
-    @Override
-    public double getLongitude() {
-        return getLongitude(false);
-    }
-
     /**
      * @methodtype set
      */
-    public SphericCoordinate setLongitude(double longitude) {
+    public AbstractCoordinate setLongitude(double longitude) {
         if (!isValidLongitude(longitude)) {
             throw new IllegalArgumentException("Invalid longitudinal value");
         }
 
-        return new SphericCoordinate(getLatitude(), longitude, getRadius());
+        return createFrom(getLatitude(), longitude, getRadius());
     }
 
     @Override
@@ -101,105 +91,12 @@ public class SphericCoordinate extends AbstractCoordinate {
     /**
      * @methodtype set
      */
-    public SphericCoordinate setRadius(double radius) {
+    public AbstractCoordinate setRadius(double radius) {
         if (!isValidRadius(radius)) {
             throw new IllegalArgumentException("Invalid radius");
         }
 
-        return new SphericCoordinate(getLatitude(), getLongitude(), radius);
-    }
-
-    @Override
-    protected double doGetDistance(SphericCoordinate other) {
-        validateCoordinate(other);
-
-        double lonDistance = getLongitudinalDistance(other, true);
-
-        double left = Math.sin(getLatitude(true)) * Math.sin(other.getLatitude(true));
-        double right = Math.cos(getLatitude(true)) * Math.cos(other.getLatitude(true)) * Math.cos(lonDistance);
-
-        double sigma = Math.acos(left + right);
-
-        return getRadius() * sigma;
-    }
-
-    /**
-     * @methodtype get
-     */
-    public double getLatitudinalDistance(Coordinate coordinate, boolean asRadian) {
-        validateCoordinate(coordinate);
-
-        assertClassInvariants();
-
-        SphericCoordinate other = ((AbstractCoordinate) coordinate).asSphericCoordinate();
-
-        return Math.abs(getLatitude(asRadian) - other.getLatitude(asRadian));
-    }
-
-    /**
-     * @methodtype get
-     * @methodproperties convenience
-     */
-    public double getLatitudinalDistance(Coordinate coordinate) {
-        return getLatitudinalDistance(coordinate, false);
-    }
-
-    /**
-     * @methodtype get
-     */
-    public double getLongitudinalDistance(Coordinate coordinate, boolean asRadian) {
-        validateCoordinate(coordinate);
-
-        assertClassInvariants();
-
-        SphericCoordinate other = ((AbstractCoordinate) coordinate).asSphericCoordinate();
-
-        return Math.abs(getLongitude(asRadian) - other.getLongitude(asRadian));
-    }
-
-    /**
-     * @methodtype get
-     * @methodproperties convenience
-     */
-    public double getLongitudinalDistance(Coordinate coordinate) {
-        return getLongitudinalDistance(coordinate, false);
-    }
-
-    @Override
-    protected SphericCoordinate asSphericCoordinate() {
-        assertClassInvariants();
-
-        return this;
-    }
-
-    /**
-     * Returns whether the given latitude is valid
-     *
-     * @param latitude Latitude to validate
-     * @return True if the given latitude is valid, false otherwise
-     */
-    protected boolean isValidLatitude(double latitude) {
-        return !(Double.isNaN(latitude) || latitude > 90.0 || latitude < -90.0);
-    }
-
-    /**
-     * Returns whether the given longitude is valid
-     *
-     * @param longitude Longitude to validate
-     * @return True if the given longitude is valid, false otherwise
-     */
-    private boolean isValidLongitude(double longitude) {
-        return !(Double.isNaN(longitude) || longitude > 180.0 || longitude < -180.0);
-    }
-
-    /**
-     * Returns whether the given radius is valid
-     *
-     * @param radius Radius to validate
-     * @return True if the given radius is valid, false otherwise
-     */
-    private boolean isValidRadius(double radius) {
-        return !(Double.isNaN(radius) || radius < 0.0);
+        return createFrom(getLatitude(), getLongitude(), radius);
     }
 
     @Pattern(
@@ -212,5 +109,19 @@ public class SphericCoordinate extends AbstractCoordinate {
                 || !isValidRadius(getRadius())) {
             throw new IllegalStateException("SphericCoordinate has invalid state");
         }
+    }
+
+    protected static AbstractCoordinate doCreateCoordinate(double latitude, double longitude, double radius) {
+        return new SphericCoordinate(latitude, longitude, radius);
+    }
+
+    public static AbstractCoordinate createFrom(double latitude, double longitude, double radius) {
+        AbstractCoordinate newCoordinate = doCreateCoordinate(latitude, longitude, radius);
+
+        return doGetCachedCoordinate(newCoordinate);
+    }
+
+    public static AbstractCoordinate createFrom(double latitude, double longitude) {
+        return createFrom(latitude, longitude, EARTH_RADIUS);
     }
 }
