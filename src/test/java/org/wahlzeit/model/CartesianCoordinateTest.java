@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotSame;
+import static junit.framework.Assert.assertSame;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -13,27 +15,29 @@ import static org.junit.Assert.assertTrue;
 public class CartesianCoordinateTest {
     private final static double DELTA = 0.01;
 
-    private CartesianCoordinate coordinateA;
-    private CartesianCoordinate coordinateB;
-    private CartesianCoordinate coordinateC;
-    private CartesianCoordinate coordinateD;
+    private AbstractCoordinate coordinateA;
+    private AbstractCoordinate coordinateB;
+    private AbstractCoordinate coordinateC;
+    private AbstractCoordinate coordinateD;
 
-    private CartesianCoordinate coordNuremberg;
-    private CartesianCoordinate coordErlangen;
-    private CartesianCoordinate coordStockholm;
-    private CartesianCoordinate coordUmea;
+    private AbstractCoordinate coordNuremberg;
+    private AbstractCoordinate coordErlangen;
+    private AbstractCoordinate coordStockholm;
+    private AbstractCoordinate coordUmea;
 
     @Before
     public void before() {
-        coordinateA = new CartesianCoordinate(0, 0, 0);
-        coordinateB = new CartesianCoordinate(500, 500, 500);
-        coordinateC = new CartesianCoordinate(500, 500, 500);
-        coordinateD = new CartesianCoordinate(-500, -500, -500);
+        AbstractCoordinate.resetCoordinateCache();
 
-        coordNuremberg = new CartesianCoordinate(795.791427, 930.289848, 6252.273011);
-        coordErlangen = new CartesianCoordinate(788.2469318, 926.067838, 6253.855302);
-        coordStockholm = new CartesianCoordinate(1007.08844, 1697.817338, 6057.460702);
-        coordUmea = new CartesianCoordinate(973.4188392, 1980.59891, 5976.564625);
+        coordinateA = CartesianCoordinate.createFrom(0, 0, 0);
+        coordinateB = CartesianCoordinate.createFrom(500, 500, 500);
+        coordinateC = CartesianCoordinate.createFrom(500, 500, 500);
+        coordinateD = CartesianCoordinate.createFrom(-500, -500, -500);
+
+        coordNuremberg = CartesianCoordinate.createFrom(795.791427, 930.289848, 6252.273011);
+        coordErlangen = CartesianCoordinate.createFrom(788.2469318, 926.067838, 6253.855302);
+        coordStockholm = CartesianCoordinate.createFrom(1007.08844, 1697.817338, 6057.460702);
+        coordUmea = CartesianCoordinate.createFrom(973.4188392, 1980.59891, 5976.564625);
     }
 
     @Test
@@ -56,19 +60,46 @@ public class CartesianCoordinateTest {
         assertEquals(0.0, coordStockholm.getDistance(coordStockholm), DELTA);
     }
 
+    @Test
+    public void setXShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((CartesianCoordinate) coordErlangen).setX(973.4188392);
+        AbstractCoordinate oldCoordinate = ((CartesianCoordinate) modifiedCoordinate).setX(788.2469318);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
+    }
+
+    @Test
+    public void setYShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((CartesianCoordinate) coordErlangen).setY(1980.59891);
+        AbstractCoordinate oldCoordinate = ((CartesianCoordinate) modifiedCoordinate).setY(926.067838);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
+    }
+
+    @Test
+    public void setZShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((CartesianCoordinate) coordErlangen).setZ(5976.564625);
+        AbstractCoordinate oldCoordinate = ((CartesianCoordinate) modifiedCoordinate).setZ(6253.855302);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void setXWithNaNShouldCauseException() {
-        coordinateA.setX(Double.NaN);
+        ((CartesianCoordinate) coordinateA).setX(Double.NaN);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setYWithNaNShouldCauseException() {
-        coordinateA.setY(Double.NaN);
+        ((CartesianCoordinate) coordinateA).setY(Double.NaN);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setZWithNaNShouldCauseException() {
-        coordinateA.setZ(Double.NaN);
+        ((CartesianCoordinate) coordinateA).setZ(Double.NaN);
     }
 
     @Test(expected = IllegalArgumentException.class)
