@@ -12,6 +12,10 @@ import java.util.Map;
 public abstract class AbstractCoordinate extends DataObject implements Coordinate {
     private static Map<String, AbstractCoordinate> coordinates = new HashMap<>();
 
+    public static void resetCoordinateCache() {
+        coordinates.clear();
+    }
+
     protected static AbstractCoordinate doGetCachedCoordinate(AbstractCoordinate coordinate) {
         String key = coordinate.toString();
 

@@ -1,10 +1,12 @@
 package org.wahlzeit.model;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotSame;
+import static junit.framework.Assert.assertSame;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -26,6 +28,8 @@ public class SphericCoordinateTest {
 
     @Before
     public void before() {
+        AbstractCoordinate.resetCoordinateCache();
+
         coordinateA = SphericCoordinate.createFrom(0, 0);
         coordinateB = SphericCoordinate.createFrom(45, -90);
         coordinateC = SphericCoordinate.createFrom(45, -90);
@@ -75,6 +79,33 @@ public class SphericCoordinateTest {
         assertEquals(1689.87, coordNuremberg.getDistance(coordUmea), DELTA);
         assertEquals(1689.87, coordUmea.getDistance(coordNuremberg), DELTA);
         assertEquals(0.0, coordStockholm.getDistance(coordStockholm), DELTA);
+    }
+
+    @Test
+    public void setLatitudeShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((SphericCoordinate) coordErlangen).setLatitude(63.826944);
+        AbstractCoordinate oldCoordinate = ((SphericCoordinate) modifiedCoordinate).setLatitude(49.596361);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
+    }
+
+    @Test
+    public void setLongitudeShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((SphericCoordinate) coordErlangen).setLongitude(20.266944);
+        AbstractCoordinate oldCoordinate = ((SphericCoordinate) modifiedCoordinate).setLongitude(11.004311);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
+    }
+
+    @Test
+    public void setRadiusShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((SphericCoordinate) coordErlangen).setRadius(SphericCoordinate.EARTH_RADIUS - 42.0);
+        AbstractCoordinate oldCoordinate = ((SphericCoordinate) modifiedCoordinate).setRadius(SphericCoordinate.EARTH_RADIUS);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
     }
 
     @Test(expected = IllegalArgumentException.class)

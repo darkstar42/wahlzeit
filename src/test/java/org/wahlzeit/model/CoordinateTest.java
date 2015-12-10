@@ -21,6 +21,8 @@ public class CoordinateTest {
 
     @Before
     public void before() {
+        AbstractCoordinate.resetCoordinateCache();
+
         coordinateA = SphericCoordinate.createFrom(59.325, 18.05);
         coordinateB = CartesianCoordinate.createFrom(1007.08844, 1697.817338, 6057.460702);
         coordinateC = SphericCoordinate.createFrom(49.596361, 11.004311);

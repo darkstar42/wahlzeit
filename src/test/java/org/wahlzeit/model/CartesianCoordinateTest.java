@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotSame;
+import static junit.framework.Assert.assertSame;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -25,6 +27,8 @@ public class CartesianCoordinateTest {
 
     @Before
     public void before() {
+        AbstractCoordinate.resetCoordinateCache();
+
         coordinateA = CartesianCoordinate.createFrom(0, 0, 0);
         coordinateB = CartesianCoordinate.createFrom(500, 500, 500);
         coordinateC = CartesianCoordinate.createFrom(500, 500, 500);
@@ -54,6 +58,33 @@ public class CartesianCoordinateTest {
         assertEquals(1689.87, coordNuremberg.getDistance(coordUmea), DELTA);
         assertEquals(1689.87, coordUmea.getDistance(coordNuremberg), DELTA);
         assertEquals(0.0, coordStockholm.getDistance(coordStockholm), DELTA);
+    }
+
+    @Test
+    public void setXShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((CartesianCoordinate) coordErlangen).setX(973.4188392);
+        AbstractCoordinate oldCoordinate = ((CartesianCoordinate) modifiedCoordinate).setX(788.2469318);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
+    }
+
+    @Test
+    public void setYShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((CartesianCoordinate) coordErlangen).setY(1980.59891);
+        AbstractCoordinate oldCoordinate = ((CartesianCoordinate) modifiedCoordinate).setY(926.067838);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
+    }
+
+    @Test
+    public void setZShouldNotModifyInstance() {
+        AbstractCoordinate modifiedCoordinate = ((CartesianCoordinate) coordErlangen).setZ(5976.564625);
+        AbstractCoordinate oldCoordinate = ((CartesianCoordinate) modifiedCoordinate).setZ(6253.855302);
+
+        assertNotSame(coordErlangen, modifiedCoordinate);
+        assertSame(coordErlangen, oldCoordinate);
     }
 
     @Test(expected = IllegalArgumentException.class)

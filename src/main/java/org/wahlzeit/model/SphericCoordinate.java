@@ -7,7 +7,7 @@ public class SphericCoordinate extends AbstractCoordinate {
     private double longitude;
     private double radius;
 
-    private final static double EARTH_RADIUS = 6371;
+    public final static double EARTH_RADIUS = 6371;
 
     /**
      * @methodtype constructor
