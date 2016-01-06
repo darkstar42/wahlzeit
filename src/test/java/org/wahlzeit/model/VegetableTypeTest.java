@@ -3,6 +3,8 @@ package org.wahlzeit.model;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Set;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertSame;
 import static junit.framework.TestCase.assertFalse;
@@ -36,9 +38,9 @@ public class VegetableTypeTest {
 
         VegetableType type = new VegetableType(scientificName, description, origin);
 
-        assertEquals(type.getScientificName(), scientificName);
-        assertEquals(type.getDescription(), description);
-        assertEquals(type.getOrigin(), origin);
+        assertEquals(scientificName, type.getScientificName());
+        assertEquals(description, type.getDescription());
+        assertEquals(origin, type.getOrigin());
     }
 
     @Test
@@ -49,10 +51,10 @@ public class VegetableTypeTest {
 
         VegetableType type = new VegetableType(superType, scientificName, description, origin);
 
-        assertSame(type.getSuperType(), superType);
-        assertEquals(type.getScientificName(), scientificName);
-        assertEquals(type.getDescription(), description);
-        assertEquals(type.getOrigin(), "C");
+        assertSame(superType, type.getSuperType());
+        assertEquals(scientificName, type.getScientificName());
+        assertEquals(description, type.getDescription());
+        assertEquals(origin, type.getOrigin());
     }
 
     @Test
@@ -86,22 +88,33 @@ public class VegetableTypeTest {
     }
 
     @Test
+    public void testGetSubTypes() {
+        Set<VegetableType> subTypes = superType.getSubTypes();
+
+        assertEquals(2, subTypes.size());
+        assertTrue(subTypes.contains(subTypeA));
+        assertTrue(subTypes.contains(subTypeB));
+        assertFalse(subTypes.contains(subTypeC));
+        assertFalse(subTypes.contains(subTypeD));
+    }
+
+    @Test
     public void testGetInstances() {
-        assertEquals(superType.getInstances().size(), 0);
+        assertEquals(0, superType.getInstances().size());
 
         Vegetable vegetableA = new Vegetable(superType);
-        assertEquals(superType.getInstances().size(), 1);
+        assertEquals(1, superType.getInstances().size());
 
         Vegetable vegetableB = new Vegetable(superType);
-        assertEquals(superType.getInstances().size(), 2);
+        assertEquals(2, superType.getInstances().size());
 
         vegetableA.setType(subTypeB);
-        assertEquals(superType.getInstances().size(), 1);
-        assertEquals(subTypeB.getInstances().size(), 1);
+        assertEquals(1, superType.getInstances().size());
+        assertEquals(1, subTypeB.getInstances().size());
 
         vegetableB.setType(subTypeB);
-        assertEquals(superType.getInstances().size(), 0);
-        assertEquals(subTypeB.getInstances().size(), 2);
+        assertEquals(0, superType.getInstances().size());
+        assertEquals(2, subTypeB.getInstances().size());
     }
 
     @Test
@@ -109,7 +122,7 @@ public class VegetableTypeTest {
         String scientificName = "ScientificName";
 
         superType.setScientificName(scientificName);
-        assertEquals(superType.getScientificName(), scientificName);
+        assertEquals(scientificName, superType.getScientificName());
     }
 
     @Test
@@ -117,7 +130,7 @@ public class VegetableTypeTest {
         String description = "Description";
 
         superType.setDescription(description);
-        assertEquals(superType.getDescription(), description);
+        assertEquals(description, superType.getDescription());
     }
 
     @Test
@@ -125,6 +138,6 @@ public class VegetableTypeTest {
         String origin = "Origin";
 
         superType.setOrigin(origin);
-        assertEquals(superType.getOrigin(), origin);
+        assertEquals(origin, superType.getOrigin());
     }
 }

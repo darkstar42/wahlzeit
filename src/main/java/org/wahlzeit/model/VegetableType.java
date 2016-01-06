@@ -246,6 +246,15 @@ public class VegetableType extends DataObject {
     }
 
     /**
+     * Returns all subtypes of this type
+     *
+     * @return Set containing all subtypes of this type
+     */
+    public Set<VegetableType> getSubTypes() {
+        return new HashSet<>(subTypes);
+    }
+
+    /**
      * Asserts a valid subtype
      *
      * @param type Subtype to assert valid

@@ -23,7 +23,7 @@ public class VegetableTest {
     public void testBaseConstructor() {
         Vegetable vegetable = new Vegetable(superType);
 
-        assertSame(vegetable.getType(), superType);
+        assertSame(superType, vegetable.getType());
     }
 
     @Test
@@ -32,15 +32,15 @@ public class VegetableTest {
 
         Vegetable vegetable = new Vegetable(superType, location);
 
-        assertSame(vegetable.getType(), superType);
-        assertSame(vegetable.getLocation(), location);
+        assertSame(superType, vegetable.getType());
+        assertSame(location, vegetable.getLocation());
     }
 
     @Test
     public void testTypeObjectMethods() {
-        assertEquals(vegetable.getScientificName(), superType.getScientificName());
-        assertEquals(vegetable.getDescription(), superType.getDescription());
-        assertEquals(vegetable.getOrigin(), superType.getOrigin());
+        assertEquals(superType.getScientificName(), vegetable.getScientificName());
+        assertEquals(superType.getDescription(), vegetable.getDescription());
+        assertEquals(superType.getOrigin(), vegetable.getOrigin());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -53,11 +53,42 @@ public class VegetableTest {
         Coordinate location = CartesianCoordinate.createFrom(123, 234, 345);
 
         vegetable.setLocation(location);
-        assertSame(vegetable.getLocation(), location);
+        assertSame(location, vegetable.getLocation());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setNullCoordinateShouldThrowException() {
         vegetable.setLocation(null);
+    }
+
+    @Test
+    public void testSetGetWeight() {
+        float weight = 42.42f;
+
+        vegetable.setWeight(weight);
+        assertEquals(weight, vegetable.getWeight());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setNegativeWeightShouldThrowException() {
+        vegetable.setWeight(-0.1f);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setNaNWeightShouldThrowException() {
+        vegetable.setWeight(Float.NaN);
+    }
+
+    @Test
+    public void testSetGetProducer() {
+        String producer = "Producer";
+
+        vegetable.setProducer(producer);
+        assertEquals(producer, vegetable.getProducer());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setNullProducerShouldThrowException() {
+        vegetable.setProducer(null);
     }
 }

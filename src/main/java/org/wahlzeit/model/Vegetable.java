@@ -12,6 +12,16 @@ public class Vegetable extends DataObject {
     private Coordinate location = SphericCoordinate.createFrom(0, 0);
 
     /**
+     * Weight in grams
+     */
+    private float weightInGrams;
+
+    /**
+     * Producer name
+     */
+    private String producer;
+
+    /**
      * Vegetable type object
      */
     private VegetableType type;
@@ -92,6 +102,46 @@ public class Vegetable extends DataObject {
     }
 
     /**
+     * Returns the weight
+     *
+     * @return Weight in grams
+     */
+    public float getWeight() {
+        return weightInGrams;
+    }
+
+    /**
+     * Sets the weight
+     *
+     * @param grams Weight in grams
+     */
+    public void setWeight(float grams) {
+        assertValidWeight(grams);
+
+        this.weightInGrams = grams;
+    }
+
+    /**
+     * Returns the name of the producer
+     *
+     * @return Producer name
+     */
+    public String getProducer() {
+        return producer;
+    }
+
+    /**
+     * Sets the name of the producer
+     *
+     * @param name Producer name
+     */
+    public void setProducer(String name) {
+        assertValidProducer(name);
+
+        this.producer = name;
+    }
+
+    /**
      * Returns the scientific name
      *
      * @return Scientific name
@@ -139,6 +189,35 @@ public class Vegetable extends DataObject {
     private void assertValidCoordinate(Coordinate coordinate) {
         if (coordinate == null) {
             throw new IllegalArgumentException("Coordinate object may not be null");
+        }
+    }
+
+    /**
+     * Asserts a valid weight
+     *
+     * @param grams Weight in grams to assert valid
+     * @throws IllegalArgumentException If the given weight is negative
+     * @throws IllegalArgumentException If the given weight is NaN
+     */
+    private void assertValidWeight(float grams) {
+        if (grams < 0.0) {
+            throw new IllegalArgumentException("Weight may not be negative");
+        }
+
+        if (Float.isNaN(grams)) {
+            throw new IllegalArgumentException("Weight may not be NaN");
+        }
+    }
+
+    /**
+     * Asserts a valid producer name
+     *
+     * @param name Producer name to assert valid
+     * @throws IllegalArgumentException If the given name is null
+     */
+    private void assertValidProducer(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Producer name may not be null");
         }
     }
 }
