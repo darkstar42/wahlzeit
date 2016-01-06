@@ -67,10 +67,9 @@ public class Vegetable extends DataObject {
             getType().removeInstance(this);
         }
 
-        type.addInstance(this);
         this.type = type;
+        type.addInstance(this);
     }
-
 
     /**
      * Returns the location

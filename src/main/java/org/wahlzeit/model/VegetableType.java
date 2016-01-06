@@ -165,7 +165,7 @@ public class VegetableType extends DataObject {
      *
      * @param vegetable Vegetable instance to add
      */
-    public void addInstance(Vegetable vegetable) {
+    protected void addInstance(Vegetable vegetable) {
         assertValidVegetable(vegetable);
 
         if (vegetable.getType() != this) {
@@ -180,7 +180,7 @@ public class VegetableType extends DataObject {
      *
      * @param vegetable Vegetable instance to remove
      */
-    public void removeInstance(Vegetable vegetable) {
+    protected void removeInstance(Vegetable vegetable) {
         assertValidVegetable(vegetable);
 
         if (vegetable.getType() != this || !instances.contains(vegetable)) {
@@ -282,7 +282,7 @@ public class VegetableType extends DataObject {
      */
     private void assertValidSuperType(VegetableType type) {
         if (type == this) {
-            throw new IllegalArgumentException("Self referencing supertype not allowed");
+            throw new IllegalArgumentException("Self referencing super type not allowed");
         }
     }
 
